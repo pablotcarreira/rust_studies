@@ -1,5 +1,15 @@
-
+use std::collections::HashSet;
 use regex::Regex;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref VALID_CHARS: HashSet<char> = ('A'..='Z')
+        .chain('a'..='z')
+        .chain('0'..='9')
+        .collect();
+
+    static ref VALIDATE_POST_CODE_REGEX: Regex = Regex::new(r#"^(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$"#).unwrap();
+}
 
 
 /// Clean, format, and validate a post code. Returns the formatted post code if it is valid,
@@ -20,39 +30,25 @@ use regex::Regex;
 pub fn validate_post_code(
     post_code: &str,
     strict_mode: bool,
-    cleaner_regex: &Regex,
-    validator_regex: &Regex,
     result: &mut String
     // post_code_cache: Some(set)
 
 ) -> Option<()>
 {
-
     if strict_mode {
         return None
     }
 
     // Clear the buffer before writing to it
     result.clear();
-
-    // Manually clean the post code by copying valid characters into the buffer
+    // Manually clean the post code by pushing valid characters into the buffer
     for ch in post_code.chars() {
-        if cleaner_regex.is_match(&ch.to_string()) {
+        if VALID_CHARS.contains(&ch){
             result.push(ch);
         }
     }
-
-    // // TODO: instead of allocation new memory we could reuse an available pre-allocated space.
-    // let cleaned_pc = cleaner_regex.replace_all(post_code, "");
-
-    // The same here.
-    if !validator_regex.is_match(result) {
+    if !VALIDATE_POST_CODE_REGEX.is_match(result) {
         return None
     }
-    // Pre-allocate a buffer for the result (6 characters)
-    // result.clear();
-    // result.push_str(&cleaned_pc);
-
     Some(())
-
 }
