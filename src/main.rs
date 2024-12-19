@@ -2,7 +2,13 @@ pub mod postcode_validator;
 use std::time::{Instant};
 
 
+
 fn main() {
+    call_validate_postcodes()
+}
+
+
+fn call_validate_postcodes(){
     let raw_code = "GIR 0AA";
 
     // Start the timer
@@ -39,7 +45,4 @@ fn main() {
     //    - Cow<str>.to_owned: 6,412,509 /s
     //    - Pre-allocated result: 5,970,170 /s
     //    - No regex, Pre-allocated: 11,190,096 /s
-
 }
-
-
