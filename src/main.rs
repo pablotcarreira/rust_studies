@@ -1,13 +1,9 @@
-
-
-fn muitas_saidas(opção: &str) -> usize{
-    if opção == "um" {
+fn many_outputs(option: &str) -> usize {
+    if option == "one" {
         1
-    }
-    else if opção == "dois" {
+    } else if option == "two" {
         2
-    }
-    else {
+    } else {
         0
     }
 }
@@ -15,14 +11,10 @@ fn muitas_saidas(opção: &str) -> usize{
 
 fn main() {
 
-    println!("opçao escolhida: {}", muitas_saidas("um"));
-
-
-
-    }
-
-
-
-
+    println!("option: {}", many_outputs("one"));
 
 }
+
+
+
+
