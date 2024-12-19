@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use regex::Regex;
 use lazy_static::lazy_static;
+use std::time::Instant;
 
 lazy_static! {
     static ref VALID_CHARS: HashSet<char> = ('A'..='Z')
@@ -51,4 +52,48 @@ pub fn validate_post_code(
         return None
     }
     Some(())
+}
+
+
+fn call_validate_postcodes(){
+    let raw_code = "GIR 0AA";
+
+    // Start the timer
+    let start = Instant::now();
+
+    // Pre allocated space to hold the result.
+    let mut result = String::with_capacity(7);
+
+    let executions = 100_000_000;
+    for _i in 0..executions {
+        let r = postcode_validator::validate_post_code(
+            raw_code,
+            false,
+            &mut result
+        );
+        match r {
+            Some(_) =>  continue,   //println!("OK: {}", result_post_code),
+            None => println!("Invalid code: {}", result)
+        }
+    }
+
+    // Stop the timer
+    let duration = start.elapsed();
+    let executions_per_second = executions as f64 / duration.as_secs_f64();
+    println!("Executed {} iterations in {:?} seconds.", executions, duration);
+    println!("Executions per second: {:.2}", executions_per_second);
+
+
+    // Non strict mode:
+    // +--------------------------+--------------------+
+    // | Test Case                | Executions/Second |
+    // +--------------------------+--------------------+
+    // | Python (my computer)     | 1,800,000         |
+    // | Regex inside function    | ~700              |
+    // | Regex passed to function | 5,956,463         |
+    // | Cow<str>.to_owned        | 6,412,509         |
+    // | Pre-allocated result     | 5,970,170         |
+    // | No regex, Pre-allocated  | 11,190,096        |
+    // | My computer              | 21,051,089        |
+    // +--------------------------+--------------------+
 }
