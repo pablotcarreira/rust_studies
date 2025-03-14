@@ -118,3 +118,15 @@ pub fn brincando_com_strings(){
 }
 
 
+/// We don't need to use return, if we omit the semicolon (;) the value is returned.
+fn many_outputs(option: &str) -> usize {
+    if option == "one" {
+        1
+    } else if option == "two" {
+        2
+    } else {
+        0
+    }
+}
+
+
